@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const mysql = require("mysql2/promise");
 
 const app = express();
 const port = 3001;
@@ -74,9 +75,27 @@ app.post("/curso", (req, res) => {
   res.send("Curso is added to the database");
 });
 
-app.get("/curso", (req, res) => {
+app.get("/curso", async (req, res) => {
+  const conn = await connect()
+  let result = await getData(conn)
+  console.log(2, result)
   res.json(cursos);
 });
+
+async function getData(conn) {
+  const [rows] = await conn.query('Select * from Cursos;');
+  return rows;
+}
+
+async function connect(){
+  if(global.connection && global.connection.state !== 'disconnected')
+      return global.connection;
+  
+  const connection = await mysql.createConnection("mysql://root:otavio@localhost:3306/PlataformaEmpreendedor");
+  console.log("Conectou no MySQL!");
+  global.connection = connection;
+  return connection;
+}
 
 app.delete("/curso/:isbn", (req, res) => {
   const isbn = req.params.isbn;

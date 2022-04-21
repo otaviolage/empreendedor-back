@@ -6,60 +6,6 @@ const mysql = require("mysql2/promise");
 const app = express();
 const port = 3001;
 
-let cursos = [
-  {
-    sku: "d9059f0f492f4d71a2b4",
-    name: "CURSO FINANÇAS",
-    imageUrl:
-      "https://codegate01.com/wp-content/uploads/2020/05/curso-html.jpg",
-    availability: {
-      price: 40,
-    },
-    vendor: {
-      id: 62,
-      name: "Udemy",
-    },
-  },
-  {
-    sku: "dbd6272add8d42199134",
-    name: "CURSO CONTABILIDADE",
-    imageUrl:
-      "https://oraculoti.com.br/wp-content/uploads/2018/06/Curso-JavaScript-Completo-com-6-Projetos-Reais.jpg",
-    availability: {
-      price: 40,
-    },
-    vendor: {
-      id: 62,
-      name: "Alura",
-    },
-  },
-  {
-    sku: "8608e689982e49d58a8e",
-    name: "CURSO DE RH",
-    imageUrl:
-      "https://jornadadodev.com.br/sites/default/files/cursos/curso-css3.jpg",
-    availability: {
-      price: 40,
-    },
-    vendor: {
-      id: 62,
-      name: "DevMedia",
-    },
-  },
-  {
-    sku: "8608e689982e49d58a8e",
-    name: "CURSO DE RH",
-    imageUrl:
-      "https://jornadadodev.com.br/sites/default/files/cursos/curso-css3.jpg",
-    availability: {
-      price: 40,
-    },
-    vendor: {
-      id: 62,
-      name: "DevMedia",
-    },
-  },
-];
 
 app.use(cors());
 
@@ -79,12 +25,33 @@ app.get("/curso", async (req, res) => {
   const conn = await connect()
   let result = await getData(conn)
   console.log(2, result)
-  res.json(cursos);
+  res.json(result);
 });
 
 async function getData(conn) {
+  let cursos = []
   const [rows] = await conn.query('Select * from Cursos;');
-  return rows;
+  
+  for (let row of rows) {
+    cursos = [
+      ...cursos,
+      {
+
+        sku: row.sku,
+        name: row.name,
+        imageUrl: row.imageUrl,
+        availability: {
+          price: row.price
+        },
+        vendor: {
+          id: 62,
+          name: row.vendor
+        }
+      }
+    ]
+  }
+
+  return cursos;
 }
 
 async function connect(){

@@ -1,97 +1,61 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const mysql = require("mysql2/promise");
+const GetCursos = require("./connection/GetCursos");
+const SqlConnect = require("./connection/SqlConnect");
 
 const app = express();
 const port = 3001;
-
 
 app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.post("/curso", (req, res) => {
-  const curso = req.body;
-
-  console.log(curso);
-  cursos.push(curso);
-
-  res.send("Curso is added to the database");
-});
 
 app.get("/curso", async (req, res) => {
-  const conn = await connect()
-  let result = await getData(conn)
-  console.log(2, result)
+  const conn = await SqlConnect()
+  let result = await GetCursos(conn)
   res.json(result);
 });
 
-async function getData(conn) {
-  let cursos = []
-  const [rows] = await conn.query('Select * from Cursos;');
-  
-  for (let row of rows) {
-    cursos = [
-      ...cursos,
-      {
+// app.post("/curso", (req, res) => {
+//   const curso = req.body;
 
-        sku: row.sku,
-        name: row.name,
-        imageUrl: row.imageUrl,
-        availability: {
-          price: row.price
-        },
-        vendor: {
-          id: 62,
-          name: row.vendor
-        }
-      }
-    ]
-  }
+//   console.log(curso);
+//   cursos.push(curso);
 
-  return cursos;
-}
+//   res.send("Curso is added to the database");
+// });
 
-async function connect(){
-  if(global.connection && global.connection.state !== 'disconnected')
-      return global.connection;
-  
-  const connection = await mysql.createConnection("mysql://root:otavio@localhost:3306/PlataformaEmpreendedor");
-  console.log("Conectou no MySQL!");
-  global.connection = connection;
-  return connection;
-}
+// app.delete("/curso/:isbn", (req, res) => {
+//   const isbn = req.params.isbn;
 
-app.delete("/curso/:isbn", (req, res) => {
-  const isbn = req.params.isbn;
+//   cursos = cursos.filter((i) => {
+//     if (i.isbn !== isbn) {
+//       return true;
+//     }
 
-  cursos = cursos.filter((i) => {
-    if (i.isbn !== isbn) {
-      return true;
-    }
+//     return false;
+//   });
 
-    return false;
-  });
+//   res.send("Curso is deleted");
+// });
 
-  res.send("Curso is deleted");
-});
+// app.post("/curso/:isbn", (req, res) => {
+//   const isbn = req.params.isbn;
+//   const newCurso = req.body;
 
-app.post("/curso/:isbn", (req, res) => {
-  const isbn = req.params.isbn;
-  const newCurso = req.body;
+//   for (let i = 0; i < cursos.length; i++) {
+//     let curso = cursos[i];
 
-  for (let i = 0; i < cursos.length; i++) {
-    let curso = cursos[i];
+//     if (curso.isbn === isbn) {
+//       cursos[i] = newCurso;
+//     }
+//   }
 
-    if (curso.isbn === isbn) {
-      cursos[i] = newCurso;
-    }
-  }
-
-  res.send("Curso is edited");
-});
+//   res.send("Curso is edited");
+// });
 
 app.listen(port, () =>
   console.log(`Api de produtos na porta ${port}!`)

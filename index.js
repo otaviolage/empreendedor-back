@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const GetCursos = require("./connection/GetCursos");
+const PostCursos = require("./connection/PostCursos");
 const SqlConnect = require("./connection/SqlConnect");
 
 const app = express();
@@ -19,14 +20,13 @@ app.get("/curso", async (req, res) => {
   res.json(result);
 });
 
-// app.post("/curso", (req, res) => {
-//   const curso = req.body;
+app.post("/curso", async (req, res) => {
+  const conn = await SqlConnect()
+  const curso = req.body.data;
 
-//   console.log(curso);
-//   cursos.push(curso);
-
-//   res.send("Curso is added to the database");
-// });
+  await PostCursos(conn, curso)
+  res.send("Curso is added to the database");
+});
 
 // app.delete("/curso/:isbn", (req, res) => {
 //   const isbn = req.params.isbn;

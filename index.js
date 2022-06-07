@@ -28,35 +28,6 @@ app.post("/curso", async (req, res) => {
   res.send("Curso is added to the database");
 });
 
-// app.delete("/curso/:isbn", (req, res) => {
-//   const isbn = req.params.isbn;
-
-//   cursos = cursos.filter((i) => {
-//     if (i.isbn !== isbn) {
-//       return true;
-//     }
-
-//     return false;
-//   });
-
-//   res.send("Curso is deleted");
-// });
-
-// app.post("/curso/:isbn", (req, res) => {
-//   const isbn = req.params.isbn;
-//   const newCurso = req.body;
-
-//   for (let i = 0; i < cursos.length; i++) {
-//     let curso = cursos[i];
-
-//     if (curso.isbn === isbn) {
-//       cursos[i] = newCurso;
-//     }
-//   }
-
-//   res.send("Curso is edited");
-// });
-
 app.listen(port, () =>
   console.log(`Api de produtos na porta ${port}!`)
 );
